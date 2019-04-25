@@ -3,6 +3,17 @@
   <span style="flex: 1 1 auto;"></span>
   <span>Chirag Sane</span>
 </mat-toolbar>
-<div class="canvas-container">
-  <canvas #isntanceNoChart></canvas>
+<div id="Dashboard">
+  <div class="sensor-list mat-elevation-z1">
+    <div class="panel-heading mat-toolbar mat-primary">Sensor list</div>
+    <div *ngFor="let sensor of sensorList" class="sensor" (click)="changeSensor(sensor)">{{sensor}}</div>
+    <span style="flex: 1 1 auto;"></span>
+    <button mat-flat-button color="accent">Browse</button>
+  </div>
+  <div class="sensor-details mat-elevation-z1">
+    <div class="panel-heading mat-toolbar mat-primary">Selected sensor: <strong>{{selectedSensor}}</strong></div>
+    <div class="canvas-container">
+      <canvas #isntanceNoChart></canvas>
+    </div>
+  </div>
 </div>

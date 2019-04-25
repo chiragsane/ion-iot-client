@@ -9,59 +9,86 @@ import { Chart } from 'chart.js';
 export class AppComponent implements OnInit {
   @ViewChild('isntanceNoChart') isntanceNoChart: ElementRef;
   IsntanceNoChart: Chart;
+  sensorList = [
+    'Sensor1',
+    'Sensor2',
+    'Sensor3',
+    'Sensor4',
+    'Sensor5',
+  ];
+  selectedSensor = this.sensorList[0];
   ngOnInit() {
+    this.drawChart();
+    setInterval(() => {
+      this.addData(this.IsntanceNoChart, Math.floor(Math.random() * 20) + 15);
+      this.removeData(this.IsntanceNoChart);
+    }, 10000);
+  }
+  drawChart() {
+    const data = [];
+    for (let i = 0; i < 360; i++) { data.push(Math.floor(Math.random() * 20) + 15); }
     this.IsntanceNoChart = new Chart(this.isntanceNoChart.nativeElement, {
       type: 'line',
       data: {
-        labels: ['--', '--', '--', '--', '--'],
+        labels: data.map(() => ''),
         datasets: [{
-          data: [7, 4, 9, 6, 8],
-          borderColor: ['#ff5722', '#3f51b5', '#2196f3', '#ff9800', '#16a085', '#00bcd4'],
-          backgroundColor: ['#ff5722', '#3f51b5', '#2196f3', '#ff9800', '#16a085', '#00bcd4'],
+          data,
+          borderColor: '#F57C00',
+          backgroundColor: '#F57C00',
+          borderWidth: 1,
           fill: false,
-          label: 'Instance Count'
+          lineTension: 0,
+          pointRadius: 0
         }]
       },
       options: {
         maintainAspectRatio: false,
         legend: {
-          display: true,
-          position: 'right',
-          labels: {
-            boxWidth: 12,
-            padding: 8
-          }
+          display: false,
         },
         scales: {
+          xAxes: [{
+            gridLines: {
+              display: false
+            }
+          }],
           yAxes: [{
-            position: 'left',
+            gridLines: {
+              display: false
+            },
             scaleLabel: {
               display: true,
-              labelString: '# Executions',
+              labelString: 'Temperature (Celsius)',
               fontFamily: 'Montserrat'
             },
+            ticks: {
+              min: 15,
+              max: 35,
+              stepSize: 5
+            }
           }]
+        },
+        tooltips: {
+          intersect: false
         }
       }
     });
-    setInterval(() => {
-      const date = new Date();
-      this.addData(this.IsntanceNoChart, date.toISOString().split('T')[1].split('.')[0], (Math.random() * 10) / 1);
-      this.removeData(this.IsntanceNoChart);
-    }, 5000);
   }
-  addData(chart: Chart, label: string, data: number) {
-    chart.data.labels.push(label);
+  addData(chart: Chart, data: number) {
     chart.data.datasets.forEach((dataset) => {
       dataset.data.push(data);
     });
     chart.update();
   }
   removeData(chart: Chart) {
-    chart.data.labels.shift();
     chart.data.datasets.forEach((dataset) => {
       dataset.data.shift();
     });
     chart.update();
+  }
+  changeSensor(sensor: string) {
+    this.selectedSensor = sensor;
+    this.IsntanceNoChart.destroy();
+    this.drawChart();
   }
 }
